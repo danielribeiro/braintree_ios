@@ -24,6 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation BTPayPalDriver
 
+- (instancetype)init { @throw nil; }
+
 + (nullable instancetype)driverWithClient:(BTClient * __nonnull)client {
     return [[self alloc] initWithClient:client returnURLScheme:[BTAppSwitch sharedInstance].returnURLScheme];
 }

@@ -108,6 +108,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// An optional delegate for receiving notifications about the lifecycle of a PayPal app switch for updating your UI
 @property (nonatomic, weak, nullable) id<BTPayPalDriverDelegate> delegate;
 
+- (instancetype)init NS_UNAVAILABLE;
+
 @end
 
 

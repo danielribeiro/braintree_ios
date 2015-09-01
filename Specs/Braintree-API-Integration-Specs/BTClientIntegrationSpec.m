@@ -805,49 +805,51 @@ sharedExamplesFor(@"a BTClient", ^(NSDictionary *data) {
             [self waitForExpectationsWithTimeout:10 handler:nil];
         });
         
-        it(@"can save a PayPal payment method based on an auth code", ^{
-            XCTestExpectation *expectation = [self expectationWithDescription:@"Save payment method"];
-            [testClient savePaypalPaymentMethodWithAuthCode:@"testAuthCode"
-                                   applicationCorrelationID:@"testCorrelationId"
-                                                    success:^(BTPayPalPaymentMethod *payPalPaymentMethod){
-                                                        expect(payPalPaymentMethod.nonce).to.beANonce();
-                                                        expect(payPalPaymentMethod.email).to.beKindOf([NSString class]);
-                                                        [expectation fulfill];
-                                                    } failure:nil];
-            [self waitForExpectationsWithTimeout:10 handler:nil];
-        });
+        // TODO: revisit these tests and consider adding test(s) for `savePaypalAccount:clientMetadataID:success:failure:`
         
-        it(@"can save a PayPal payment method based on an auth code without a correlation id", ^{
-            XCTestExpectation *expectation = [self expectationWithDescription:@"Save payment method"];
-            [testClient savePaypalPaymentMethodWithAuthCode:@"testAuthCode"
-                                   applicationCorrelationID:nil
-                                                    success:^(BTPayPalPaymentMethod *payPalPaymentMethod){
-                                                        expect(payPalPaymentMethod.nonce).to.beANonce();
-                                                        expect(payPalPaymentMethod.email).to.beKindOf([NSString class]);
-                                                        [expectation fulfill];
-                                                    } failure:nil];
-            [self waitForExpectationsWithTimeout:10 handler:nil];
-        });
+//        it(@"can save a PayPal payment method based on an auth code", ^{
+//            XCTestExpectation *expectation = [self expectationWithDescription:@"Save payment method"];
+//            [testClient savePaypalPaymentMethodWithAuthCode:@"testAuthCode"
+//                                   applicationCorrelationID:@"testCorrelationId"
+//                                                    success:^(BTPayPalPaymentMethod *payPalPaymentMethod){
+//                                                        expect(payPalPaymentMethod.nonce).to.beANonce();
+//                                                        expect(payPalPaymentMethod.email).to.beKindOf([NSString class]);
+//                                                        [expectation fulfill];
+//                                                    } failure:nil];
+//            [self waitForExpectationsWithTimeout:10 handler:nil];
+//        });
         
-        it(@"can save a PayPal payment method that includes address information when an additional address scope is set", ^{
-            XCTestExpectation *expectation = [self expectationWithDescription:@"Save payment method"];
-            testClient.additionalPayPalScopes = [NSSet setWithObject:@"address"];
-            [testClient savePaypalPaymentMethodWithAuthCode:@"testAuthCode"
-                                   applicationCorrelationID:@"testCorrelationId"
-                                                    success:^(BTPayPalPaymentMethod *payPalPaymentMethod){
-                                                        expect(payPalPaymentMethod.nonce).to.beANonce();
-                                                        expect(payPalPaymentMethod.email).to.beKindOf([NSString class]);
-                                                        expect(payPalPaymentMethod.billingAddress).toNot.beNil();
-                                                        expect(payPalPaymentMethod.billingAddress.streetAddress).to.beKindOf([NSString class]);
-                                                        expect(payPalPaymentMethod.billingAddress.extendedAddress).to.beKindOf([NSString class]);
-                                                        expect(payPalPaymentMethod.billingAddress.locality).to.beKindOf([NSString class]);
-                                                        expect(payPalPaymentMethod.billingAddress.region).to.beKindOf([NSString class]);
-                                                        expect(payPalPaymentMethod.billingAddress.postalCode).to.beKindOf([NSString class]);
-                                                        expect(payPalPaymentMethod.billingAddress.countryCodeAlpha2).to.beKindOf([NSString class]);
-                                                        [expectation fulfill];
-                                                    } failure:nil];
-            [self waitForExpectationsWithTimeout:10 handler:nil];
-        });
+//        it(@"can save a PayPal payment method based on an auth code without a correlation id", ^{
+//            XCTestExpectation *expectation = [self expectationWithDescription:@"Save payment method"];
+//            [testClient savePaypalPaymentMethodWithAuthCode:@"testAuthCode"
+//                                   applicationCorrelationID:nil
+//                                                    success:^(BTPayPalPaymentMethod *payPalPaymentMethod){
+//                                                        expect(payPalPaymentMethod.nonce).to.beANonce();
+//                                                        expect(payPalPaymentMethod.email).to.beKindOf([NSString class]);
+//                                                        [expectation fulfill];
+//                                                    } failure:nil];
+//            [self waitForExpectationsWithTimeout:10 handler:nil];
+//        });
+//        
+//        it(@"can save a PayPal payment method that includes address information when an additional address scope is set", ^{
+//            XCTestExpectation *expectation = [self expectationWithDescription:@"Save payment method"];
+//            testClient.additionalPayPalScopes = [NSSet setWithObject:@"address"];
+//            [testClient savePaypalPaymentMethodWithAuthCode:@"testAuthCode"
+//                                   applicationCorrelationID:@"testCorrelationId"
+//                                                    success:^(BTPayPalPaymentMethod *payPalPaymentMethod){
+//                                                        expect(payPalPaymentMethod.nonce).to.beANonce();
+//                                                        expect(payPalPaymentMethod.email).to.beKindOf([NSString class]);
+//                                                        expect(payPalPaymentMethod.billingAddress).toNot.beNil();
+//                                                        expect(payPalPaymentMethod.billingAddress.streetAddress).to.beKindOf([NSString class]);
+//                                                        expect(payPalPaymentMethod.billingAddress.extendedAddress).to.beKindOf([NSString class]);
+//                                                        expect(payPalPaymentMethod.billingAddress.locality).to.beKindOf([NSString class]);
+//                                                        expect(payPalPaymentMethod.billingAddress.region).to.beKindOf([NSString class]);
+//                                                        expect(payPalPaymentMethod.billingAddress.postalCode).to.beKindOf([NSString class]);
+//                                                        expect(payPalPaymentMethod.billingAddress.countryCodeAlpha2).to.beKindOf([NSString class]);
+//                                                        [expectation fulfill];
+//                                                    } failure:nil];
+//            [self waitForExpectationsWithTimeout:10 handler:nil];
+//        });
     });
     
     describe(@"a client initialized with a revoked authorization fingerprint", ^{
@@ -1143,50 +1145,50 @@ sharedExamplesFor(@"a BTClient", ^(NSDictionary *data) {
             });
         });
         
-        describe(@"of a non-card nonce", ^{
-            __block NSString *nonce;
-            __block BTClient *testPayPalClient;
-            
-            beforeEach(^{
-                XCTestExpectation *clientExpectation = [self expectationWithDescription:@"Fetch client that supports PayPal"];
-                NSDictionary *configuration = @{ BTClientTestConfigurationKeyMerchantIdentifier: @"integration_merchant_id",
-                                                 BTClientTestConfigurationKeyPublicKey: @"integration_public_key",
-                                                 BTClientTestConfigurationKeyMerchantAccountIdentifier: @"sandbox_credit_card",
-                                                 BTClientTestConfigurationKeyClientTokenVersion: @2 };
-                [BTClient testClientWithConfiguration:configuration
-                                                async:asyncClient completion:^(BTClient *testClient) {
-                                                    testPayPalClient = testClient;
-                                                    [clientExpectation fulfill];
-                                                }];
-                [self waitForExpectationsWithTimeout:5 handler:nil];
-                
-                XCTestExpectation *expectation = [self expectationWithDescription:@"Get PayPal nonce"];
-                [testPayPalClient savePaypalPaymentMethodWithAuthCode:@"fake-paypal-auth-code"
-                                             applicationCorrelationID:nil
-                                                              success:^(BTPayPalPaymentMethod *paypalPaymentMethod) {
-                                                                  nonce = paypalPaymentMethod.nonce;
-                                                                  [expectation fulfill];
-                                                              } failure:^(NSError *error) {
-                                                                  XCTFail(@"Unexpected error: %@", error);
-                                                              }];
-                [self waitForExpectationsWithTimeout:5 handler:nil];
-            });
-            
-            it(@"fails to perform a lookup", ^{
-                XCTestExpectation *expectation = [self expectationWithDescription:@"Fail to perform lookup"];
-                [testThreeDSecureClient lookupNonceForThreeDSecure:nonce
-                                                 transactionAmount:[NSDecimalNumber decimalNumberWithString:@"1"]
-                                                           success:nil
-                                                           failure:^(NSError *error) {
-                                                               expect(error.domain).to.equal(BTBraintreeAPIErrorDomain);
-                                                               expect(error.code).to.equal(BTCustomerInputErrorInvalid);
-                                                               expect(error.localizedDescription).to.contain(@"Cannot 3D Secure a non-credit card payment instrument");
-                                                               expect(error.userInfo[BTCustomerInputBraintreeValidationErrorsKey]).to.beKindOf([NSDictionary class]);
-                                                               [expectation fulfill];
-                                                           }];
-                [self waitForExpectationsWithTimeout:10 handler:nil];
-            });
-        });
+//        describe(@"of a non-card nonce", ^{
+//            __block NSString *nonce;
+//            __block BTClient *testPayPalClient;
+//            
+//            beforeEach(^{
+//                XCTestExpectation *clientExpectation = [self expectationWithDescription:@"Fetch client that supports PayPal"];
+//                NSDictionary *configuration = @{ BTClientTestConfigurationKeyMerchantIdentifier: @"integration_merchant_id",
+//                                                 BTClientTestConfigurationKeyPublicKey: @"integration_public_key",
+//                                                 BTClientTestConfigurationKeyMerchantAccountIdentifier: @"sandbox_credit_card",
+//                                                 BTClientTestConfigurationKeyClientTokenVersion: @2 };
+//                [BTClient testClientWithConfiguration:configuration
+//                                                async:asyncClient completion:^(BTClient *testClient) {
+//                                                    testPayPalClient = testClient;
+//                                                    [clientExpectation fulfill];
+//                                                }];
+//                [self waitForExpectationsWithTimeout:5 handler:nil];
+//                
+//                XCTestExpectation *expectation = [self expectationWithDescription:@"Get PayPal nonce"];
+//                [testPayPalClient savePaypalPaymentMethodWithAuthCode:@"fake-paypal-auth-code"
+//                                             applicationCorrelationID:nil
+//                                                              success:^(BTPayPalPaymentMethod *paypalPaymentMethod) {
+//                                                                  nonce = paypalPaymentMethod.nonce;
+//                                                                  [expectation fulfill];
+//                                                              } failure:^(NSError *error) {
+//                                                                  XCTFail(@"Unexpected error: %@", error);
+//                                                              }];
+//                [self waitForExpectationsWithTimeout:5 handler:nil];
+//            });
+//            
+//            it(@"fails to perform a lookup", ^{
+//                XCTestExpectation *expectation = [self expectationWithDescription:@"Fail to perform lookup"];
+//                [testThreeDSecureClient lookupNonceForThreeDSecure:nonce
+//                                                 transactionAmount:[NSDecimalNumber decimalNumberWithString:@"1"]
+//                                                           success:nil
+//                                                           failure:^(NSError *error) {
+//                                                               expect(error.domain).to.equal(BTBraintreeAPIErrorDomain);
+//                                                               expect(error.code).to.equal(BTCustomerInputErrorInvalid);
+//                                                               expect(error.localizedDescription).to.contain(@"Cannot 3D Secure a non-credit card payment instrument");
+//                                                               expect(error.userInfo[BTCustomerInputBraintreeValidationErrorsKey]).to.beKindOf([NSDictionary class]);
+//                                                               [expectation fulfill];
+//                                                           }];
+//                [self waitForExpectationsWithTimeout:10 handler:nil];
+//            });
+//        });
         
         describe(@"unregistered 3DS merchant", ^{
             __block NSString *nonce;
