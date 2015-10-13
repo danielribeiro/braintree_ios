@@ -7,6 +7,10 @@ require 'xcodeproj/project'
 ::Xcodeproj::Project.define_singleton_method(:open) do |path|
   @_project_cache ||= {}
   cached_value = @_project_cache[path]
+  whodidthis = caller
+  File.open("/Users/danielrb/projs/braintree_ios/callsites", "a") do |f|
+    f.puts whodidthis.map {|stack| stack.sub(/^.*\/gems\//, '$GEMS/')}.inspect
+  end
   return cached_value if cached_value
   path = Pathname.pwd + path
   unless Pathname.new(path).exist?
