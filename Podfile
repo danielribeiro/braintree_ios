@@ -2,6 +2,27 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 workspace 'Braintree.xcworkspace'
 
+require 'xcodeproj'
+require 'xcodeproj/project'
+::Xcodeproj::Project.define_singleton_method(:open) do |path|
+  @_project_cache ||= {}
+  cached_value = @_project_cache[path]
+  whodidthis = caller
+  File.open("/Users/danielrb/projs/braintree_ios/callsites", "a") do |f|
+    f.puts whodidthis.map {|stack| stack.sub(/^.*\/gems\//, '$GEMS/')}.inspect
+  end
+  return cached_value if cached_value
+  path = Pathname.pwd + path
+  unless Pathname.new(path).exist?
+    raise "[Xcodeproj] Unable to open `#{path}` because it doesn't exist."
+  end
+  project = new(path, true)
+  project.send(:initialize_from_file)
+  @_project_cache[path] = project
+  project
+end
+
+
 target 'Tests' do
   link_with 'Braintree-Acceptance-Specs',
             'Braintree-UI-Specs',
