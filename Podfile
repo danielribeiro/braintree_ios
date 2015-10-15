@@ -2,24 +2,18 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 workspace 'Braintree.xcworkspace'
 
+ENV['COCOAPODS_DISABLE_STATS'] ='true'
 require 'xcodeproj'
 require 'xcodeproj/project'
+old_method = ::Xcodeproj::Project.singleton_method(:open)
 ::Xcodeproj::Project.define_singleton_method(:open) do |path|
-  @_project_cache ||= {}
-  cached_value = @_project_cache[path]
-  whodidthis = caller
+  puts "===> calling open on #{path}"
   File.open("/Users/danielrb/projs/braintree_ios/callsites", "a") do |f|
+    f.puts "callsite for #{path}"
+    whodidthis = caller
     f.puts whodidthis.map {|stack| stack.sub(/^.*\/gems\//, '$GEMS/')}.inspect
   end
-  return cached_value if cached_value
-  path = Pathname.pwd + path
-  unless Pathname.new(path).exist?
-    raise "[Xcodeproj] Unable to open `#{path}` because it doesn't exist."
-  end
-  project = new(path, true)
-  project.send(:initialize_from_file)
-  @_project_cache[path] = project
-  project
+  old_method.call(path)
 end
 
 
