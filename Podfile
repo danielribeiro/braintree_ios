@@ -2,6 +2,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 workspace 'Braintree.xcworkspace'
 
+ENV['COCOAPODS_DISABLE_STATS'] ='true'
 require 'xcodeproj'
 require 'xcodeproj/project'
 old_method = ::Xcodeproj::Project.singleton_method(:open)
